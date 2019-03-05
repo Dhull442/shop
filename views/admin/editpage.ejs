@@ -1,0 +1,20 @@
+<% include ../layouts/adminheader %>
+<h2 class="page-title"> Edit <%= pagetitle %> Page </h2>
+<a href="/admin/pages" class="btn btn-primary">Back to all Pages </a>
+
+<form method ="POST" action="/admin/pages/posteditPage">
+  <div class="form-group">
+    <label for="pagetitle">Title</label>
+    <input type = "text" class = "form-control" name="pagetitle" placeholder="Enter the title" value="<%= pagetitle %>"</input>
+  </div>
+  <div class="form-group">
+    <label for="slug">Slug</label>
+    <input type = "text" class = "form-control" name="slug" placeholder="Enter the slug" value="<%= slug %>"</input>
+  </div>
+  <div class="form-group">
+    <label for="content">Content</label>
+    <textarea name="content" class="form-group" id="ta" rows="5" cols="auto" placeholder="Enter the content here!"><%= content %></textarea>
+  </div>
+  <input type="hidden" name="id" value="<%= id %>">
+  <button class="btn btn-primary"> Submit </button>
+<% include ../layouts/adminfooter %>

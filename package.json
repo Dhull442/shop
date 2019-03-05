@@ -14,10 +14,18 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
+    "connect-busboy": "0.0.2",
+    "connect-flash": "^0.1.1",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
+    "express-fileupload": "^1.1.1-alpha.3",
+    "express-messages": "^1.0.1",
     "express-session": "^1.15.6",
+    "express-validate": "0.0.8",
     "express-validator": "^5.3.1",
-    "mongoose": "^5.4.17"
+    "fs-extra": "^7.0.1",
+    "mkdirp": "^0.5.1",
+    "mongoose": "^5.4.17",
+    "resize-img": "^1.1.2"
   }
 }

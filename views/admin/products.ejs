@@ -1,0 +1,52 @@
+<% include ../layouts/adminheader %>
+<h2 class="page-title">Products</h2>
+<a href="/admin/product/add" class="btn btn-primary">Add a Product</a>
+
+<br><br>
+<% if(count == 0 || typeof (count) == "undefined"){ %>
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <i class="far fa-frown"></i> No Products available
+  </div>
+
+<% } else { %>
+<table class="table table-striped">
+
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Categories</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% products.forEach(function(product){ %>
+      <tr>
+        <th>
+          image here
+          <% if(product.image == ""){ %>
+            <img src="/images/noimage.jpeg" alt="No Image found">
+          <% } else { %>
+            <img src="/product_images/<%= product._id %>/<%= product.image %>" alt="">
+          <% }; %>
+        </th>
+        <th><%= product.name %></th>
+        <th>$<%= parseFloat(product.price).toFixed(2) %></th>
+        <th>
+        <% var num = 0; %>
+        <% product.categories.forEach((category)=>{ %>
+            <% if(num != 0){ %>
+              ,
+            <% }; num=num+1; %>
+              <%= category.cattitle %>
+        <% }) %>
+        <th><a href="/admin/product/edit/<%= product._id %>">EDIT</a></th>
+        <th><a class="confirmDelete" href="/admin/product/delete/<%= product._id %>">DELETE</a></th>
+      </tr>
+      <% }) %>
+  </tbody>
+</table>
+<% } %>
+<% include ../layouts/adminfooter %>
