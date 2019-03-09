@@ -5,7 +5,7 @@ const express = require('express'),
       session = require('express-session'),
       expressValidator = require('express-validator'),
       flash = require('connect-flash'),
-      fileUpload = require('express-fileupload');
+      passport = require('passport');
 
 // Init app
 const app = express();
@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 // Express FileUpload
-app.use(fileUpload());
+// app.use(fileUpload());
 // Express session
 app.use(session({
   secret: 'shh',
@@ -32,7 +32,10 @@ app.use(session({
   saveUninitialized: true,
   // cookie: { secure: true }
 }))
-
+// Passport Middleware
+require('./config/passport')(passport);
+app.use(passport.initialize());
+app.use(passport.session());
 // Flash initialize
 app.use(flash());
 
@@ -52,6 +55,27 @@ mongoose.connect(dbURI,{ useNewUrlParser: true })
   .then(()=> console.log('MongoDB connected'))
   .catch(err => console.log(err))
 
+app.locals.errors=null;
+
+// Pages for header
+Page= require('./models/page')
+
+Page.find({}).sort({sorting: 1}).exec((err,pages)=>{
+  if(err) throw err;
+  else {
+    app.locals.pages = pages;
+  }
+})
+
+// Categories for header
+Category = require('./models/category')
+
+Category.find((err,pages)=>{
+  if(err) throw err;
+  else {
+    app.locals.categories = pages;
+  }
+})
 
 // Express validator
 app.use(expressValidator({
@@ -85,6 +109,12 @@ app.use(expressValidator({
 })
 );
 
+app.get('*',function(req,res,next){
+  res.locals.cart = req.session.cart;
+  res.locals.user = req.user || null;
+  next();
+})
+
 // messages
 app.use(function (req, res, next) {
   res.locals.messages = require('express-messages')(req, res);
@@ -92,9 +122,14 @@ app.use(function (req, res, next) {
 });
 
 // Routes
+// USER
 app.use('/', require('./routes/index'));
+app.use('/products',require('./routes/products'));
+app.use('/cart',require('./routes/cart'));
+app.use('/u',require('./routes/users'));
+// ADMIN
 app.use('/admin/pages',require('./routes/adminpages'));
 app.use('/admin/category',require('./routes/adminCategory'));
 app.use('/admin/product',require('./routes/adminProduct'));
-
+app.use('/admin/users',require('./routes/adminusers'))
 app.listen(PORT, ()=> {console.log(`Shopping started at ${PORT}`)});

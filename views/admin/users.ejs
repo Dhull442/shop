@@ -1,0 +1,40 @@
+<% include ../layouts/adminheader %>
+<h2 class="page-title">Users</h2>
+<a href="/admin/users/add" class="btn btn-primary">Add a user</a>
+
+<br><br>
+
+<table class="table table-striped">
+
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Username</th>
+      <th>Role</th>
+      <th></th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% users.forEach(function(user){ %>
+      <tr>
+        <th><%= user.name %></th>
+        <th><%= user.username %></th>
+        <th>
+        <% if(user.admin == 1){ %>
+          USER
+        <% } else { %>
+          ADMIN
+        <% } %>
+        </th>
+        <th><a href="/admin/users/view/<%= user._id %>">VIEW</a></th>
+        <% if(user.admin == 0){ %>
+          <th></th>
+        <% } else { %>
+          <th><a class="confirmDelete" href="/admin/users/delete/<%= user._id %>"><i class="fas fa-times-circle" style="color: red"></i></a></th>
+        <% } %>
+      </tr>
+      <% }) %>
+  </tbody>
+</table>
+<% include ../layouts/adminfooter %>

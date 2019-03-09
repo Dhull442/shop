@@ -17,13 +17,12 @@ const ProductSchema = mongoose.Schema({
     required : true
   },
   categories: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category'
-  }],
-  image: {
-    type: String,
-    required: true
-  }
+    type: String
+  }]
+  // image: {
+  //   type: String,
+  //   required: true
+  // }
 });
 
 var Product = module.exports = mongoose.model('Product',ProductSchema);

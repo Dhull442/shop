@@ -9,49 +9,56 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="https://bootswatch.com/4/sketchy/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-    <style>
-      .bd-placeholder-img {
-        font-size: 1.125rem;
-        text-anchor: middle;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-      }
-
-      @media (min-width: 768px) {
-        .bd-placeholder-img-lg {
-          font-size: 3.5rem;
-        }
-      }
-    </style>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/style.css">
   </head>
   <body>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">Navbar</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
+  <a href="/" alt="Home"><i class="fas fa-shopping-bag fa-2x" style="color: white"></i></a>
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Link</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-      </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-        <div class="dropdown-menu" aria-labelledby="dropdown01">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
+      <% pages.forEach(function(page){ %>
+        <% if(page.slug == "home" ) { %>
+      <%  } else { %>
+        <li class="nav-item">
+          <a class="nav-link" href="/nav/<%= page.slug %>"><%= page.pagetitle %></a>
+        </li>
+      <% } %>
+    <%  }); %>
+    </ul>
+    <ul class="navbar-nav navbar-right">
+        <li class="nav-item">
+          <a class="nav-link" href="/cart/checkout">My Cart(
+            <% if(typeof cart !== 'undefined'){  %>
+              <%= cart.length %>
+            <% } else { %>
+              0
+            <% }%>) </a>
+        </li>
+    </ul>
+    <ul class="navbar-nav navbar-right">
+
+          <% if (typeof user !== 'undefined' && user != null){ %>
+          <li class="nav-item">
+            <a class="nav-link" href="/u/name/:<%= user.username %>">Hi, <%= user.name %></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/u/logout">Logout</a>
+          </li>
+          <% if(user.admin == 0) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/pages">Admin Area</a>
+            </li>
+          <% } %>
+          <% } else { %>
+          <li class="nav-item">
+            <a class="nav-link" href="/u/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/u/register">Register</a>
+          </li>
+          <% } %>
+
     </ul>
     <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
@@ -61,3 +68,15 @@
 </nav>
 <div class="container">
   <% include ../partials/messages %>
+<div class="row">
+  <div class="col-xs-12 col-md-3">
+    <h3> Categories </h3>
+    <ul class ="list-group">
+      <li class="list-group-item"> <a href="/products"> All Products</a> </li>
+      <% categories.forEach(function(cat){ %>
+        <li class="list-group-item"><a href="/products/category/<%= cat.slug %>"><%= cat.cattitle %> </a>
+      <% }) %>
+    </ul>
+  </div>
+  <div class="col-xs-12"></div>
+  <div class="col-xs-12 col-md-8">

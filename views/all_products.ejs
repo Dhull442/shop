@@ -1,0 +1,32 @@
+<% include ./layouts/header %>
+<br><br>
+<table class="table table-striped">
+
+  <thead>
+    <tr>
+      <th>Product Name</th>
+      <th>Price</th>
+      <th>Categories</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% products.forEach(function(p){ %>
+      <tr>
+        <th><%= p.name %></th>
+        <th>$<%= parseFloat(p.price).toFixed(2) %></th>
+        <th>
+        <% var num = 0; %>
+        <% p.categories.forEach((catname)=>{ %>
+            <% if(num != 0){ %>
+              ,
+            <% }; num=num+1; %>
+            <%= catname %>
+        <% }); %>
+        </th>
+        <th><a href="/products/<%= p.slug %>">VIEW DETAILS</a></th>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+<% include ./layouts/footer %>

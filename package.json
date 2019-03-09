@@ -13,6 +13,7 @@
     "express-generator": "^4.16.0"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "connect-busboy": "0.0.2",
     "connect-flash": "^0.1.1",
@@ -26,6 +27,8 @@
     "fs-extra": "^7.0.1",
     "mkdirp": "^0.5.1",
     "mongoose": "^5.4.17",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
     "resize-img": "^1.1.2"
   }
 }

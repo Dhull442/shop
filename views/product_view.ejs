@@ -1,0 +1,17 @@
+<% include layouts/header %>
+<br><br>
+<h3><%= name %></h3>
+<h4>$<%= parseFloat(price).toFixed(2) %></h4>
+<h4>Categories:</h4>
+<ul>
+  <% pcategories.forEach(category=>{ %>
+      <li><%= category %></li>
+<% })%>
+</ul>
+<p> <%= description %></p>
+<% if(auth) { %>
+  <a href="/cart/add/<%= slug %>">Add to Cart </a>
+<% } else { %>
+  <a href="/u/login">Login</a> OR <a href="/u/register">Register</a> to Add the Item to cart!
+<% } %>
+<% include layouts/footer %>

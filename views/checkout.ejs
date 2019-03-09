@@ -1,0 +1,69 @@
+<% include layouts/header %>
+<br><br>
+<% if(typeof cart !== 'undefined'){ %>
+  <table class="table table-striped">
+
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th></th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% var total = 0; %>
+      <% cart.forEach(function(p){ %>
+        <% var sub = parseFloat(p.qty*p.price).toFixed(2); total+=sub; %>
+        <tr>
+          <th><a href="/products/<%=  p.slug %>"><%= p.title %></a></th>
+          <th>$<%= parseFloat(p.price).toFixed(2) %></th>
+          <th><%= p.qty %></th>
+          <th>
+            <a href="/cart/update/<%= p.slug %>?action=increase"><i class="fas fa-plus-circle" style="color: green"></i></a>
+            <a href="/cart/update/<%= p.slug %>?action=decrease"><i class="fas fa-minus-circle" style="color: black"></i></a>
+            <a class="confirmDelete" href="/cart/update/<%= p.slug %>?action=remove"><i class="fas fa-times-circle" style="color: red"></i></a>
+          </th>
+          <th>$<%= parseFloat(sub).toFixed(2) %></th>
+        </tr>
+      <% }) %>
+        <tr>
+          <td colspan="6" align="right"><b>Total:</b>$<%= parseFloat(total).toFixed(2) %></td>
+        </tr>
+          <td colspan="5" align="right">
+            <a class="btn btn-danger confirmDelete" href="/cart/clear">Clear Cart</a>
+          </td>
+          <td colspan="5" align="right">
+            <a class="btn btn-dark buynow" href="/cart/proceed">Proceed</a>
+          </td>
+          <td colspan="5" align="right">
+            <form class="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+              <input type="hidden" name="cmd" value="_cart"/>
+              <input type="hidden" name="upload" value="1"/>
+              <input type="hidden" name="business" value="sakshamdhull442@gmail.com"/>
+              <% var num = 0; %>
+              <% cart.forEach(function(p){ %>
+                  <input type="hidden" name="item_name_<%= num %>" value="<%= p.slug %> ">
+                  <input type="hidden" name="amount_<%= num %>" value="<%= p.price %> ">
+                  <input type="hidden" name="quantity_<%= num %>" value="<%= p.qty %> ">
+              <% }) %>
+              <input type="hidden" name="currency_code" value="USD"/>
+              <input type="hidden" name="amount" value="<%= total %>"/>
+              <button class="btn btn-warning" align="right">PAYPAL</button>
+              </form>
+          </td>
+        <tr>
+    </tbody>
+  </table>
+
+<% } else { %>
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <i class="far fa-frown-open"></i> Your Cart is Empty
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+<% } %>
+
+<% include layouts/footer %>

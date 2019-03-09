@@ -81,9 +81,17 @@ router.post('/postedit',(req,res)=>{
             // page.content = content;
             page.save( (err) => {
               if (err) throw err;
+
+              Category.find((err,pages)=>{
+                if(err) throw err;
+                else {
+                  req.app.locals.categories = pages;
+                }
+              })
               req.flash('success',`Category ${page.cattitle} edited successfully`);
               res.redirect('/admin/category');
             })
+
           }
         })
       }
@@ -93,8 +101,15 @@ router.post('/postedit',(req,res)=>{
 
 
 router.get('/delete/:id',(req,res)=>{
-  Category.findByIdAndRemove(req.params.id,(err,page)=>{
+  Category.findByIdAndDelete(req.params.id,(err,page)=>{
     if(err) throw err;
+
+    Category.find((err,pages)=>{
+      if(err) throw err;
+      else {
+        req.app.locals.categories = pages;
+      }
+    })
     req.flash('success','Category deleted successfully');
     res.redirect('/admin/category');
   })
@@ -147,6 +162,13 @@ router.post('/add',(req,res)=>{
         });
         newpage.save((err)=>{
           if (err) throw err;
+
+          Category.find((err,pages)=>{
+            if(err) throw err;
+            else {
+              req.app.locals.categories = pages;
+            }
+          })
           req.flash('success','Category added!');
           res.redirect('/admin/category');
         })

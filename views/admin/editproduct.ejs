@@ -1,8 +1,8 @@
 <% include ../layouts/adminheader %>
-<h2 class="page-title"> Add A Product </h2>
+<h2 class="page-title"> Edit Product </h2>
 <a href="/admin/product" class="btn btn-primary">Back to all Products</a>
 
-<form method="POST" action="/admin/product/add" enctype="multipart/form-data">
+<form method="POST" action="/admin/product/edit">
   <div class="form-group">
     <label for="name">Name</label>
     <input type = "text" class = "form-control" name="name" placeholder="Enter the Name" value="<%= name %>"/>
@@ -33,31 +33,6 @@
     </select>
   </div>
   <% } %>
+  <input type="hidden" name="id" value="<%= id %>">
   <button class="btn btn-primary"  > Submit </button>
-  <!-- <div class="form-group">
-    <label for="image">Image</label>
-    <input type ="file" class = "form-control" name="image" id="img"/>
-    <img src="#" id="imgPreview">
-  </div>
-
-  <script>
-    function readURL(input) {
-      if (input.files && input.files[0]) {
-          var reader = new FileReader();
-          console.log("OKAY");
-          reader.onload = function (e) {
-              $('#imgPreview')
-                  .attr('src', e.target.result)
-                  .width(150)
-                  .height(200);
-          };
-
-          reader.readAsDataURL(input.files[0]);
-      }
-  }
-
-      $('#img').change(function(){
-        readURL(this);
-      })
-  </script> -->
 <% include ../layouts/adminfooter %>

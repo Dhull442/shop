@@ -11,6 +11,7 @@ var Product = require('../models/product'),
 router.get('/',(req,res)=>{
   var count;
   Product.countDocuments((err,c)=>{
+    if(err) throw err;
     count = c
   });
   Product.find((err,products)=>{
@@ -22,77 +23,94 @@ router.get('/',(req,res)=>{
   })
 
 })
-router.get('/edit/:slug',(req,res)=>{
-  Category.findOne({slug: req.params.slug},(err,page)=>{
+router.get('/edit',(req,res)=>{
+    res.redirect('/admin/product')
+})
+router.get('/edit/:id',(req,res)=>{
+
+  Product.findById(req.params.id,(err,page)=>{
     if(err){
-      console.log(err);
+      throw err;
     }
-    res.render('admin/editCat',{
-      title : 'Edit Category',
-      cattitle : page.cattitle,
-      slug : page.slug,
-      id: page._id
+    Category.find((err,cats)=>{
+      res.render('admin/editproduct',{
+        title : 'Edit Product',
+        name: page.name,
+        slug : page.slug,
+        price: page.price,
+        description: page.description,
+        id: page._id,
+        categories: cats
+      });
     })
   })
 })
 
-router.post('/postedit',(req,res)=>{
-  req.checkBody('cattitle','Title can\'t be empty').notEmpty();
-  // req.checkBody('content','Content can\'t be empty').notEmpty();
+router.post('/edit',(req,res)=>{
+  req.checkBody('name','Product name can\'t be empty').notEmpty();
+  req.checkBody('categories','Categories can\'t be empty').notEmpty();
+  req.checkBody('description','Description can\'t be empty').notEmpty();
   var slug=req.body.slug ,id = req.body.id;
-  var cattitle=req.body.cattitle;
+  var name=req.body.name;
+  var price = req.body.price;
+  var description = req.body.description;
+  var categories = req.body.categories;
   if(slug === "" ){
-    slug = cattitle;
+    slug = name;
   }
   slug = slug.replace(/\s+/g,'-').toLowerCase();
   var errors = req.validationErrors();
 
   if(errors){
     console.log(errors)
-    res.render('admin/editCat',{
-      errors: errors,
-      title : 'Edit Category',
-      cattitle : cattitle,
-      slug  : slug,
-      // content: content,
-      id: id
+    Category.find((err,cats)=>{
+      res.render('admin/editproduct',{
+        errors: errors,
+        title : 'Edit Product',
+        name: name,
+        slug : slug,
+        price: price,
+        description: description,
+        id: id,
+        categories: cats
+      });
     })
   }
   else{
-    Category.findOne({slug:slug, _id:{'$ne':id}},(err,page)=>{
+    Product.findOne({slug:slug, _id:{'$ne':id}},(err,page)=>{
       if(page){
         req.flash('danger',`Another category exists with slug as ${slug}`)
         console.log('Same slug exists')
-        res.render('admin/editCat',{
-          title : 'Edit Category',
-          cattitle : cattitle,
-          slug  : slug,
-          // content: content,
-          id: id
+        Category.find((err,cats)=>{
+          res.render('admin/editproduct',{
+            title : 'Edit Product',
+            name: name,
+            slug : slug,
+            price: price,
+            description: description,
+            id: id,
+            categories: cats
+          });
         })
       }
       else{
-        Category.findById(id,(err,page)=>{
+        Product.findById(id,(err,page)=>{
           if(err) throw err;
           if(!page){
-            console.log('Category doesn\'t exist, Contact Developer!');
-            res.render('admin/editCat',{
-              title : 'Add Category',
-              cattitle : cattitle,
-              slug  : slug,
-              // content: content,
-              id: id
-            })
+            console.log('Product doesn\'t exist, Contact Developer!');
+            res.send("404!")
           }
           else{
             console.log('Edit in progress')
-            page.cattitle = cattitle;
+            page.name = name;
             page.slug = slug;
-            // page.content = content;
+            page.price = price;
+            page.description = description;
+            page.categories = categories;
             page.save( (err) => {
               if (err) throw err;
               req.flash('success',`Category ${page.cattitle} edited successfully`);
-              res.redirect('/admin/category');
+              res.redirect('/admin/product');
             })
           }
         })
@@ -103,10 +121,11 @@ router.post('/postedit',(req,res)=>{
 
 
 router.get('/delete/:id',(req,res)=>{
-  Category.findByIdAndRemove(req.params.id,(err,page)=>{
+  Product.findByIdAndDelete(req.params.id,(err,page)=>{
     if(err) throw err;
-    req.flash('success','Category deleted successfully');
-    res.redirect('/admin/category');
+    console.log('Deleted successfully')
+    req.flash('success','Product deleted successfully');
+    res.redirect('/admin/product/');
   })
 })
 
@@ -129,9 +148,6 @@ router.post('/add',(req,res)=>{
   req.checkBody('name','Product Name can\'t be empty').notEmpty();
   req.checkBody('description','Product Description can\'t be empty').notEmpty();
   req.checkBody('categories','Choose atleast one category or add one').notEmpty();
-  console.log(req.files);
-  var imageFile = typeof req.files.image != 'undefined' ? req.files.image.name : '';
-  req.checkBody('image','You must upload an image').isImage(imageFile);
   var slug=req.body.slug;
   var name=req.body.name;
   if(slug === "" ){
@@ -140,8 +156,8 @@ router.post('/add',(req,res)=>{
   slug=slug.replace(/\s+/g,'-').toLowerCase();
   var price = req.body.price;
   var description = req.body.description;
-  var categoriesid = req.body.categories;
-  var imagename = req.body.image;
+  var categories = req.body.categories;
+  // var imagename = req.body.image;
   var errors = req.validationErrors();
 
   if(errors){
@@ -154,8 +170,7 @@ router.post('/add',(req,res)=>{
         slug: slug,
         categories: cats,
         description: description,
-        price: price,
-        image: imagename
+        price: price
       })
     })
   }
@@ -171,8 +186,7 @@ router.post('/add',(req,res)=>{
             slug: slug,
             categories: cats,
             description: description,
-            price: price,
-            image: imagename
+            price: price
           })
         })
       }
@@ -184,33 +198,33 @@ router.post('/add',(req,res)=>{
           slug: slug,
           description: description,
           price: price,
-          image: imageFile,
+          // image: imageFile,
           categories: categories
         });
         newpage.save((err)=>{
           if (err) throw err;
 
-          mkdirp('public/product_images/'+newpage._id,(err)=>{
-            throw err;
-            console.log(err);
-          })
-          mkdirp('public/product_images/'+newpage._id+'/gallery',(err)=>{
-            throw err;
-            console.log(err);
-          })
-          mkdirp('public/product_images/'+newpage._id+'/gallery/thumbnail',(err)=>{
-            throw err;
-            console.log(err);
-          })
-          if(imageFile != ''){
-            var productImage = req.files.image;
-            var path = 'public/product_images/'+newpage._id+'/'+imageFile;
-
-            productImage.mv(path,(err)=>{
-              throw err;
-            })
-
-          }
+          // mkdirp('public/product_images/'+newpage._id,(err)=>{
+          //   throw err;
+          //   console.log(err);
+          // })
+          // mkdirp('public/product_images/'+newpage._id+'/gallery',(err)=>{
+          //   throw err;
+          //   console.log(err);
+          // })
+          // mkdirp('public/product_images/'+newpage._id+'/gallery/thumbnail',(err)=>{
+          //   throw err;
+          //   console.log(err);
+          // })
+          // if(imageFile != ''){
+          //   var productImage = req.files.image;
+          //   var path = 'public/product_images/'+newpage._id+'/'+imageFile;
+          //
+          //   productImage.mv(path,(err)=>{
+          //     throw err;
+          //   })
+          //
+          // }
           req.flash('success','Product added!');
           res.redirect('/admin/product');
         })

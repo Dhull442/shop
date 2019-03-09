@@ -12,6 +12,12 @@ router.get('/',(req,res)=>{
     })
   })
 
+  Page.find({}).sort({sorting: 1}).exec((err,pages)=>{
+    if(err) throw err;
+    else {
+      req.app.locals.pages = pages;
+    }
+  })
 })
 router.get('/editpage/:slug',(req,res)=>{
   Page.findOne({slug: req.params.slug},(err,page)=>{
@@ -89,9 +95,17 @@ router.post('/posteditPage',(req,res)=>{
             page.content = content;
             page.save( (err) => {
               if (err) throw err;
+              Page.find({}).sort({sorting: 1}).exec((err,pages)=>{
+                if(err) throw err;
+                else {
+                  req.app.locals.pages = pages;
+                }
+              })
               req.flash('success',`Page ${page.pagetitle} edited successfully`);
               res.redirect('/admin/pages/');
             })
+
+
           }
         })
       }
@@ -103,9 +117,17 @@ router.post('/posteditPage',(req,res)=>{
 router.get('/deletepage/:id',(req,res)=>{
   Page.findByIdAndDelete(req.params.id,(err,page)=>{
     if(err) throw err;
+    Page.find({}).sort({sorting: 1}).exec((err,pages)=>{
+      if(err) throw err;
+      else {
+        req.app.locals.pages = pages;
+      }
+    })
     req.flash('success','Page deleted successfully');
     res.redirect('/admin/pages');
   })
+
+
 })
 
 router.get('/addPage',(req,res)=>{
@@ -161,9 +183,17 @@ router.post('/addPage',(req,res)=>{
         });
         newpage.save((err)=>{
           if (err) throw err;
+          Page.find({}).sort({sorting: 1}).exec((err,pages)=>{
+            if(err) throw err;
+            else {
+              req.app.locals.pages = pages;
+            }
+          })
           req.flash('success','Page added!');
           res.redirect('/admin/pages');
         })
+
+
       }
     })
   }
