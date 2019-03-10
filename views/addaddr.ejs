@@ -1,0 +1,18 @@
+<% include layouts/header %>
+<h2 class="page-title">Edit Address</h2>
+    <label for"address">address</label>
+    <%if(typeof user.address != 'undefined' ){%>
+      <%if(user.address.length>0){%>
+        <ul>
+        <%for(var i = 0;i<user.address.length;i++){%>
+          <li><%= user.address[i] %><a href="/u/address/<%= i %>?action=remove"><i class="fas fa-times-circle" style="color: red"></i></a><a href="u/address/<%= i %>?action=edit"><i class="far fa-edit"></i></a> </li>
+        <%}%>
+        </ul>
+      <%}%>
+    <%}%>
+    <form class="form-group" action="/u/address/add" method="post">
+      <label for="addaddr">Add address</label>
+      <textarea name="address" rows="8" cols="80"></textarea>
+      <button class="btn btn-primary">Add</button>
+    </form>
+<% include layouts/footer %>

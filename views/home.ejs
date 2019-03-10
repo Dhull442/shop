@@ -1,0 +1,26 @@
+<% include layouts/header  %>
+
+<br><br>
+<a href="/u/edit" class="btn btn-primary">Edit</a>
+<ul>
+<li>Name:<%= user.name %> </li>
+<li>Username:<%= user.username %></li>
+<%  if(user.description  == '' || typeof user.description == 'undefined'){ %>
+    <li><a href="/u/edit">ADD description</a></li>
+<%  } else { console.log(user.description) %>
+    <li>About you: <%= user.description %></li>
+<%  } %>
+<% if(user.address.length>0){ %>
+  <li>
+    <ul>
+  <% user.address.forEach(a=>{ %>
+      <li><%= a %></li>
+  <% }) %>
+  </ul>
+  </li>
+<% } else { %>
+  <li><a href="/u/address">ADD address</a></li>
+<% } %>
+
+</ul>
+<% include layouts/footer %>

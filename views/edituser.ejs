@@ -1,0 +1,29 @@
+<% include layouts/header %>
+<h2 class="page-title">Edit User</h2>
+<form method = "POST" action="/u/edit">
+  <div class="form-group">
+    <label for="name">Name</label>
+    <input type = "text" class = "form-control" name="name" placeholder="Enter the Name" value="<%= typeof user.name != 'undefined' ? user.name : '' %>"</input>
+  </div>
+  <div class="form-group">
+    <label for="username">username</label>
+    <input type = "text" class = "form-control" name="username" placeholder="Enter the username" value="<%= typeof user.username != 'undefined' ? user.username : '' %>"</input>
+  </div>
+  <div class="form-group">
+    <label for="description">description</label>
+    <textarea name="description" rows="8" cols="80" value="<%= typeof user.description != 'undefined' ? user.description : '' %>"></textarea>
+  <div class="form-group">
+    <label for"address">address</label>
+    <%if(typeof user.address != 'undefined' ){%>
+      <%if(user.address.length>0){ var i =0 ;%>
+        <ul>
+        <%for(i = 0;i<user.address.length;i++){%>
+          <li><%= user.address[i] %><a href="/u/address/<%= i %>?action=remove"><i class="fas fa-times-circle" style="color: red"></i></a><a href="u/address/<%= i %>?action=edit"><i class="far fa-edit"></i></a> </li>
+        <%}%>
+        </ul>
+      <%}%>
+    <%}%>
+    <a href="/u/address">Add Adress</a>
+  </div>
+  <button class="btn btn-primary"> Submit </button>
+<% include layouts/footer %>

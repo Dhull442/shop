@@ -10,11 +10,11 @@ var Product = require('../models/product'),
 
 router.get('/',(req,res)=>{
   var count;
-  Product.countDocuments((err,c)=>{
+  Product.countDocuments().then((err,c)=>{
     if(err) throw err;
     count = c
   });
-  Product.find((err,products)=>{
+  Product.find().then((err,products)=>{
     res.render('admin/products',{
       title: 'Products',
       products: products,
@@ -28,11 +28,11 @@ router.get('/edit',(req,res)=>{
 })
 router.get('/edit/:id',(req,res)=>{
 
-  Product.findById(req.params.id,(err,page)=>{
+  Product.findById(req.params.id).then((err,page)=>{
     if(err){
       throw err;
     }
-    Category.find((err,cats)=>{
+    Category.find().then((err,cats)=>{
       res.render('admin/editproduct',{
         title : 'Edit Product',
         name: page.name,
@@ -63,7 +63,7 @@ router.post('/edit',(req,res)=>{
 
   if(errors){
     console.log(errors)
-    Category.find((err,cats)=>{
+    Category.find().then((err,cats)=>{
       res.render('admin/editproduct',{
         errors: errors,
         title : 'Edit Product',
@@ -77,11 +77,11 @@ router.post('/edit',(req,res)=>{
     })
   }
   else{
-    Product.findOne({slug:slug, _id:{'$ne':id}},(err,page)=>{
+    Product.findOne().then({slug:slug, _id:{'$ne':id}},(err,page)=>{
       if(page){
         req.flash('danger',`Another category exists with slug as ${slug}`)
         console.log('Same slug exists')
-        Category.find((err,cats)=>{
+        Category.find().then((err,cats)=>{
           res.render('admin/editproduct',{
             title : 'Edit Product',
             name: name,
@@ -94,7 +94,7 @@ router.post('/edit',(req,res)=>{
         })
       }
       else{
-        Product.findById(id,(err,page)=>{
+        Product.findById(id).then((err,page)=>{
           if(err) throw err;
           if(!page){
             console.log('Product doesn\'t exist, Contact Developer!');
@@ -107,7 +107,7 @@ router.post('/edit',(req,res)=>{
             page.price = price;
             page.description = description;
             page.categories = categories;
-            page.save( (err) => {
+            page.save().then((err) => {
               if (err) throw err;
               req.flash('success',`Category ${page.cattitle} edited successfully`);
               res.redirect('/admin/product');
@@ -121,7 +121,7 @@ router.post('/edit',(req,res)=>{
 
 
 router.get('/delete/:id',(req,res)=>{
-  Product.findByIdAndDelete(req.params.id,(err,page)=>{
+  Product.findByIdAndDelete(req.params.id).then((err,page)=>{
     if(err) throw err;
     console.log('Deleted successfully')
     req.flash('success','Product deleted successfully');
@@ -131,7 +131,8 @@ router.get('/delete/:id',(req,res)=>{
 
 router.get('/add',(req,res)=>{
   var name="",slug="",price=0,description="",image="";
-  Category.find((err,cats)=>{
+  Category.find().then(
+    (err,cats)=>{
     res.render('admin/addproduct',{
       title : 'Add Product',
       name: name,

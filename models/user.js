@@ -15,7 +15,13 @@ const UserSchema = mongoose.Schema({
   password: {
     type: String,
     required: true
-  }
+  },
+  about: {
+    type: String
+  },
+  address: [{
+    type: String
+  }]
 })
 
 
