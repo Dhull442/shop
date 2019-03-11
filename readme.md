@@ -1,7 +1,10 @@
 # SHOPPING CART
-
-In case of ERROR : `lsof -i tcp:5000`
-ADMIN : `admin;wubbalubbadubdub`
+# How to USE:
+- install all requirements first : `npm install`
+- then do : `npm start`
+- go to `localhost:5000/`
+- In case of 'port already busy' error : `lsof -i tcp:5000` and `kill -9 PID`
+- ADMIN : `admin;wubbalubbadubdub`
 
 ### Things left to do:
 - Implement CkEDITOR in add and edit Pages
